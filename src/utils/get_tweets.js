@@ -45,13 +45,13 @@ const getUserTweets = async (username, maxTweetCount = 10) => {
   const url = `https://api.twitter.com/2/users/${id}/tweets?tweet.fields=created_at&expansions=author_id&user.fields=created_at&max_results=${maxTweetCount}`;
 
   try {
-    const { data: recent_tweets } = await fetch(url, {
+    const { data: tweets } = await fetch(url, {
       headers: {
         authorization: `Bearer ${bearerToken}`,
       },
     }).then(r => r.json());
 
-    return { display_name, id, recent_tweets };
+    return { display_name, id, tweets };
   } catch (error) {
     console.error(`Error getting user's Tweets: ${error}`);
   }
