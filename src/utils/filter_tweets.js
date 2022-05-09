@@ -8,8 +8,10 @@
  * @returns {Array<object>} topicalTweets - Tweets that match the topics being queried
  */
 
-const filterByTopics = (tweets, topics) => {
-  //destructure object to just pull out the text
+const filterBy = (tweets, topics) => {
+  console.log('topics in filter func:', topics);
+
+  // only care about tweet's text here
   const topicalTweets = tweets.filter(({ text }) => {
     const wordsInTweet = text.split(' ');
 
@@ -18,9 +20,7 @@ const filterByTopics = (tweets, topics) => {
     }
   });
 
-  console.log('topicalTweets:', topicalTweets);
-
   return topicalTweets;
 };
 
-export default filterByTopics;
+export default filterBy;

@@ -40,7 +40,7 @@ const getUserMetaData = async username => {
  * @returns {Promise} - Once proimse fulfilled, will be oject user meta data and recent tweets
  */
 const getUserTweets = async (username, maxTweetCount = 10) => {
-  const { id, name: display_name } = await getUserMetaData(username);
+  const { id, name } = await getUserMetaData(username);
 
   const url = `https://api.twitter.com/2/users/${id}/tweets?tweet.fields=created_at&expansions=author_id&user.fields=created_at&max_results=${maxTweetCount}`;
 
@@ -51,7 +51,7 @@ const getUserTweets = async (username, maxTweetCount = 10) => {
       },
     }).then(r => r.json());
 
-    return { display_name, id, tweets };
+    return { user: { name, handle: `@${username}`, id }, tweets };
   } catch (error) {
     console.error(`Error getting user's Tweets: ${error}`);
   }
