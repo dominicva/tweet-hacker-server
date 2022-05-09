@@ -7,15 +7,15 @@ const router = Router();
 
 // mounted at /api in index.js
 router
-  .route('/tweets/:username?/:topics?/:num_results?')
+  .route('/tweets/:username?/:topics?/:numResults?')
   .get(reqLogger, async (req, res) => {
     const {
       username = 'elonmusk',
       topics = null,
-      num_results = 10,
+      numResults = 10,
     } = req.params;
 
-    const { user, tweets } = await getUserTweets(username, num_results);
+    const { user, tweets } = await getUserTweets(username, numResults);
 
     const clientResponse = {
       data: {

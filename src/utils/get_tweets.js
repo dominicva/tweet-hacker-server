@@ -9,11 +9,11 @@ const { TWITTER_BEARER_TOKEN: bearerToken } = process.env;
  * Get twitter ID and display name based on a username/handle
  *
  * @async
- * @function getUserMetaData
+ * @function getMetaData
  * @param {string} username - User's twitter handle
- * @returns {Promise<object | void>} - user's twitter id and display name if fetch successful
+ * @returns {Promise<object>} - user's twitter id and display name
  */
-const getUserMetaData = async username => {
+const getMetaData = async username => {
   try {
     const url = `https://api.twitter.com/2/users/by/username/${username}`;
     const {
@@ -31,16 +31,16 @@ const getUserMetaData = async username => {
 };
 
 /**
- * Merge user meta data and recent tweets into single object
+ * Fetch a user's tweets and merge user data and tweets into single object
  *
  * @async
  * @function getUserTweets
  * @param {string} username - Twitter handle of a user
  * @param {number} maxTweetCount - Number of tweets we want to fetch
- * @returns {Promise} - Once proimse fulfilled, will be oject user meta data and recent tweets
+ * @returns {Promise<object>}
  */
 const getUserTweets = async (username, maxTweetCount = 10) => {
-  const { id, name } = await getUserMetaData(username);
+  const { id, name } = await getMetaData(username);
 
   const url = `https://api.twitter.com/2/users/${id}/tweets?tweet.fields=created_at&expansions=author_id&user.fields=created_at&max_results=${maxTweetCount}`;
 
