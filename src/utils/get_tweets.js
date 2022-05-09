@@ -13,7 +13,7 @@ const { TWITTER_BEARER_TOKEN: bearerToken } = process.env;
  * @param {string} username - User's twitter handle
  * @returns {Promise<object | void>} - user's twitter id and display name if fetch successful
  */
-export const getUserMetaData = async username => {
+const getUserMetaData = async username => {
   try {
     const url = `https://api.twitter.com/2/users/by/username/${username}`;
     const {
@@ -34,27 +34,27 @@ export const getUserMetaData = async username => {
  * Merge user meta data and recent tweets into single object
  *
  * @async
- * @function mergeTweetsWithMetaData
+ * @function getUserTweets
  * @param {string} username - Twitter handle of a user
  * @param {number} maxTweetCount - Number of tweets we want to fetch
  * @returns {Promise} - Once proimse fulfilled, will be oject user meta data and recent tweets
  */
-export const mergeTweetsWithMetaData = async (username, maxTweetCount) => {
-  const { id, name } = await getUserMetaData(username);
+const getUserTweets = async (username, maxTweetCount = 10) => {
+  const { id, name: display_name } = await getUserMetaData(username);
 
-  // could use more research into what fields are available
-  // extension could also be to make this more user-determined
   const url = `https://api.twitter.com/2/users/${id}/tweets?tweet.fields=created_at&expansions=author_id&user.fields=created_at&max_results=${maxTweetCount}`;
 
   try {
-    const { data: tweets } = await fetch(url, {
+    const { data: recent_tweets } = await fetch(url, {
       headers: {
         authorization: `Bearer ${bearerToken}`,
       },
     }).then(r => r.json());
 
-    return { id, name, tweets };
+    return { display_name, id, recent_tweets };
   } catch (error) {
     console.error(`Error getting user's Tweets: ${error}`);
   }
 };
+
+export default getUserTweets;

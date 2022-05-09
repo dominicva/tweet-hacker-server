@@ -1,23 +1,31 @@
 import { Router } from 'express';
 import reqLogger from '@notthedom/logging-express';
-import { getUserMetaData } from './utils/get_tweets.js';
+import getUserTweets from './utils/get_tweets.js';
 const { log } = console;
 
 const router = Router();
 
 // mounted at /api in index.js
-router.route('/tweets/:username?').get(reqLogger, async (req, res) => {
-  const { username = 'elonmusk' } = req.params;
+router
+  .route('/tweets/:username?/:num_tweets?')
+  .get(reqLogger, async (req, res) => {
+    const { username = 'elonmusk', num_tweets } = req.params;
 
-  const { id, name: displayName } = await getUserMetaData(username);
+    const { display_name, id, recent_tweets } = await getUserTweets(
+      username,
+      num_tweets
+    );
 
-  const clientResponse = {
-    username,
-    displayName,
-    id,
-  };
+    const clientResponse = {
+      data: {
+        username,
+        display_name,
+        id,
+        recent_tweets,
+      },
+    };
 
-  res.json({ data: clientResponse });
-});
+    res.json(clientResponse);
+  });
 
 export default router;
