@@ -13,7 +13,6 @@ const filterBy = (tweets, topics) => {
   const topicalTweets = tweets.filter(({ text }) => {
     // TODO improve text parsing
     const wordsInTweet = text.split(' ');
-    console.log('wordsInTweet:', wordsInTweet);
 
     for (const word of wordsInTweet) {
       if (topics.includes(word)) return true;
