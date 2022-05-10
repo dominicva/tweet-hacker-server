@@ -7,7 +7,7 @@ const router = Router();
 router.route('/tweets/:username').get(async (req, res) => {
   const { username = 'balajis' } = req.params;
 
-  const responseData = await getUserTweets(username, numResults);
+  const responseData = await getUserTweets(username);
 
   res.json(responseData);
 });
