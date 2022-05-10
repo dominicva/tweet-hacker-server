@@ -4,8 +4,6 @@
 
 ## What does the frontend want from us?
 
-I'll loosely follow the [google api design guide](https://cloud.google.com/apis/design/standard_methods)
-
 1. By twitter handle
 
 - Standard method: List
