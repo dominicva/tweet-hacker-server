@@ -17,14 +17,14 @@ const getMetaData = async username => {
   try {
     const url = `https://api.twitter.com/2/users/by/username/${username}`;
     const {
-      data: { id, name },
+      data: { id, name: display_name },
     } = await fetch(url, {
       headers: {
         authorization: `Bearer ${bearerToken}`,
       },
     }).then(r => r.json());
 
-    return { id, name };
+    return { id, display_name };
   } catch (error) {
     console.error(`Error getting user's Twitter id: ${error}`);
   }
@@ -40,7 +40,7 @@ const getMetaData = async username => {
  * @returns {Promise<object>}
  */
 const getUserTweets = async (username, maxTweetCount = 10) => {
-  const { id, name } = await getMetaData(username);
+  const { id, display_name } = await getMetaData(username);
 
   const url = `https://api.twitter.com/2/users/${id}/tweets?tweet.fields=created_at&expansions=author_id&user.fields=created_at&max_results=${maxTweetCount}`;
 
@@ -51,7 +51,7 @@ const getUserTweets = async (username, maxTweetCount = 10) => {
       },
     }).then(r => r.json());
 
-    return { user: { name, handle: `@${username}`, id }, tweets };
+    return { user: { display_name, handle: `@${username}`, id }, tweets };
   } catch (error) {
     console.error(`Error getting user's Tweets: ${error}`);
   }
