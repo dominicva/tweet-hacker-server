@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import fetch from 'node-fetch';
+import jsFetch from '@notthedom/js-fetch';
 
 dotenv.config();
 
@@ -21,15 +21,21 @@ const BASE_URL = 'https://api.twitter.com/2/users';
  */
 const getUserData = async username => {
   try {
-    const url = `${BASE_URL}/by/username/${username}?user.fields=name,username,id,verified,profile_image_url,location,description,public_metrics`;
+    const url = `${BASE_URL}/by/username/${username}?user.fields=name,username,created_at,id,verified,profile_image_url,location,description,public_metrics`;
 
-    const { data } = await fetch(url, AUTH).then(r => r.json());
+    const { data } = await jsFetch(url, AUTH);
 
     return data;
   } catch (error) {
     console.error(`Error getting user's Twitter id: ${error}`);
+    return null;
   }
 };
+
+// const getUserMentions = async url => {
+//   const mentions = await jsFetch(url, AUTH);
+//   console.log('mentions:', mentions);
+// };
 
 /**
  * Fetch a user's tweets and merge user data and tweets into single object
@@ -37,20 +43,22 @@ const getUserData = async username => {
  * @async
  * @function getUserTweets
  * @param {string} username - Twitter handle of a user
- * @param {number} maxTweetCount - Number of tweets we want to fetch
  * @returns {Promise<object>}
  */
 const getUserTweets = async username => {
-  const user = await getUserData(username);
-
-  const url = `${BASE_URL}/${user.id}/tweets?tweet.fields=id,created_at,text,author_id,public_metrics`;
-
   try {
-    const { data: tweets } = await fetch(url, AUTH).then(r => r.json());
+    const user = await getUserData(username);
 
-    return { user, tweets };
+    const tweetsUrl = `${BASE_URL}/${user.id}/tweets?tweet.fields=id,created_at,attachments,text,entities,author_id,public_metrics,possibly_sensitive`;
+    const { data: tweets } = await jsFetch(tweetsUrl, AUTH);
+
+    const mentionsUrl = `${BASE_URL}/${user.id}/mentions?expansions=author_id`;
+    const { data: mentions } = await jsFetch(mentionsUrl, AUTH);
+
+    return { user, tweets, mentions };
   } catch (error) {
     console.error(`Error getting user's Tweets: ${error}`);
+    return null;
   }
 };
 

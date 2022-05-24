@@ -17,6 +17,8 @@ const filterBy = (tweets, topics) => {
     for (const word of wordsInTweet) {
       if (topics.includes(word)) return true;
     }
+
+    return false;
   });
 
   return topicalTweets;
