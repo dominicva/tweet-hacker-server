@@ -1,15 +1,31 @@
 import { Router } from 'express';
-import getUserTweets from './utils/get_tweets.js';
+import { getUser, getMentions, getTweets } from './utils/reads.js';
 
 const router = Router();
 
 // mounted at /api in index.js
-router.route('/tweets/:username').get(async (req, res) => {
+// endpoint to get data on a specific user
+router.route('/:username/').get(async (req, res) => {
   const { username = 'balajis' } = req.params;
+  const { expansions } = req.query;
 
-  const responseData = await getUserTweets(username);
+  const responseData = {};
 
-  res.json(responseData);
+  responseData.user = await getUser(username);
+
+  try {
+    if (expansions.includes('tweets')) {
+      responseData.tweets = await getTweets(username);
+    }
+
+    if (expansions.includes('mentions')) {
+      responseData.mentions = await getMentions(username);
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    res.json(responseData);
+  }
 });
 
 export default router;
